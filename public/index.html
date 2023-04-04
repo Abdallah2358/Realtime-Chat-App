@@ -55,7 +55,7 @@
         }
 
         function getMessages() {
-            $.get('http://localhost:3000/messages', (data) => {
+            $.get('https://hadidi-time-chatapp.onrender.com/messages', (data) => {
                 console.log(data);
                 for (const m of data) {
                     console.log("Message", m);
@@ -65,7 +65,7 @@
         }
 
         function sendMessage(message) {
-            $.post('http://localhost:3000/messages', message)
+            $.post('https://hadidi-time-chatapp.onrender.com/messages', message)
         }
     </script>
 </body>
