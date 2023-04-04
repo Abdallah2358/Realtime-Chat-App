@@ -56,7 +56,11 @@
 
         function getMessages() {
             $.get('http://localhost:3000/messages', (data) => {
-                data.forEach(addMessages);
+                console.log(data);
+                for (const m of data) {
+                    console.log("Message", m);
+                    addMessages(m);
+                }
             })
         }
 

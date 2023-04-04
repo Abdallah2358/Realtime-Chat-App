@@ -1,6 +1,16 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-
+require('dotenv').config();
+const mongoose = require('mongoose');
+mongoose
+    .connect((process.env.cString ? process.env.cString : "mongodb://127.0.0.1:27017/test"))
+    .catch((err) => {
+        console.log("Mongoose Error", err);
+    })
+mongoose.connection.on('error', (err) => {
+    console.log(err);
+});
+const Message = mongoose.model('Message', { name: String, message: String });
 
 const app = express();
 // socket setup
@@ -20,15 +30,22 @@ const root = __dirname + '/public/';
 
 //routing
 app.get('/messages', (req, res) => {
-    Message.find({}).then((err, messages) => {
+    Message.find({}).then((messages) => {
         res.send(messages);
     })
 })
 
 app.post('/messages', (req, res) => {
-    io.emit('message', req.body);
-    console.log('message', req.body);
-    res.sendStatus(200);
+    console.log(req.body);
+
+    const message = new Message(req.body);
+    message.save().then(() => {
+        io.emit('message', req.body);
+        res.sendStatus(200);
+    }).catch((error) => {
+        console.log(error);
+    })
+
 })
 io.on('connection', (socket) => {
     console.log('a user connected');
